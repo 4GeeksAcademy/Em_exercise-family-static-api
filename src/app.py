@@ -20,23 +20,86 @@ jackson_family = FamilyStructure("Jackson")
 def handle_invalid_usage(error):
     return jsonify(error.to_dict()), error.status_code
 
-# generate sitemap with all your endpoints
+#  --------------------------------------------------------------------------- Sitemap below
 @app.route('/')
 def sitemap():
     return generate_sitemap(app)
 
+# ---------------------------------------------------------------------------- Endpoint to bring one family member
+
+@app.route('/member/<int:member_id>', methods=['GET'])
+def bring_one_member(member_id):
+    member = jackson_family.get_member(member_id)
+    if member is None:
+        return jsonify({"msg": "no family member with this ID"}), 404
+    return jsonify(member), 200
+
+# ---------------------------------------------------------------------------- Endpoint to get all family members
 @app.route('/members', methods=['GET'])
-def handle_hello():
-
-    # this is how you can use the Family datastructure by calling its methods
+def bring_all_members():
     members = jackson_family.get_all_members()
-    response_body = {
-        "hello": "world",
-        "family": members
-    }
-
-
+    response_body = members
     return jsonify(response_body), 200
+
+# ---------------------------------------------------------------------------- Endpoint to add new family members
+
+@app.route('/member', methods=['POST'])
+def add_member():
+    # this is how you can use the Family datastructure by calling its methods
+    body =  request.get_json()
+    member = {
+        "first_name" : body["first_name"],
+        "age" : body["age"],
+        "lucky_numbers" : body["lucky_numbers"]
+    } 
+    new_member = jackson_family.add_member(member)
+    response_body = {
+        "msg" : "Se agrego el miembro",
+        "member" : new_member
+    }
+    return jsonify(response_body), 200
+# ---------------------------------------------------Endpoint to add TOMMY
+@app.route('/member/3443', methods=['POST'])
+def add_tommy():
+    # this is how you can use the Family datastructure by calling its methods
+    body =  request.get_json()
+    tommy = {
+        "id" : 3443,
+        "first_name" : body["first_name"],
+        "age" : body["age"],
+        "lucky_numbers" : body["lucky_numbers"]
+    } 
+    new_member = jackson_family.add_tommy(tommy)
+    response_body = {
+        "msg" : "Se agrego tommy",
+        "member" : new_member
+    }
+    return jsonify(response_body), 200
+
+# ---------------------------------------------------------------------------- Endpoint to update family members
+@app.route("/members/<int:member_id>", methods=["PUT"])
+def handle_update_member(member_id):
+    json_data = request.get_json()
+    result = jackson_family.update_member(member_id, json_data)
+    return jsonify(result), 200
+
+# ---------------------------------------------------------------------------- Endpoint to delete family members
+@app.route('/member/<int:member_id>', methods=['DELETE'])
+def handle_delete_member (member_id):
+    member = jackson_family.get_member(member_id)
+    if member is None:
+       return jsonify({"msg": "no family member with this ID"}), 404
+    jackson_family.delete_member(member_id)
+    response_body = {
+        "done": True
+    }
+    return jsonify(response_body), 200
+
+
+
+
+
+
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
