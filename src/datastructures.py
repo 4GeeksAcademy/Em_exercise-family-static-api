@@ -47,7 +47,16 @@ class FamilyStructure:
                 return member
         return None
     
-    # def add_tommy(self,) # crear funcion que cree a tommy cada vez
+    # def add_tommy(self):
+    #     tommy = {
+    #         "id": 3443,
+    #         "first_name": "Tommy",
+    #         "last_name": self.last_name,
+    #         "age": 23,
+    #         "lucky_numbers": [34,65,23,4,6]
+    #         } 
+   
+    #     self._members.append(tommy)
     
     def add_member(self, member):
 
@@ -58,6 +67,11 @@ class FamilyStructure:
             "age": member["age"],
             "lucky_numbers": member["lucky_numbers"]
             } 
+        
+        if new_member["first_name"] == "Tommy":
+            new_member["id"] = 3443
+        else:
+            new_member["id"] = self._generateId()
             
         self._members.append(new_member)
         pass

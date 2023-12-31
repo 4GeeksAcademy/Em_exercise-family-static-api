@@ -40,12 +40,9 @@ def bring_all_members():
     members = jackson_family.get_all_members()
     response_body = members
     return jsonify(response_body), 200
-
 # ---------------------------------------------------------------------------- Endpoint to add new family members
-
 @app.route('/member', methods=['POST'])
 def add_member():
-    # this is how you can use the Family datastructure by calling its methods
     body =  request.get_json()
     member = {
         "first_name" : body["first_name"],
@@ -58,31 +55,12 @@ def add_member():
         "member" : new_member
     }
     return jsonify(response_body), 200
-# ---------------------------------------------------Endpoint to add TOMMY
-@app.route('/member/3443', methods=['POST'])
-def add_tommy():
-    # this is how you can use the Family datastructure by calling its methods
-    body =  request.get_json()
-    tommy = {
-        "id" : 3443,
-        "first_name" : body["first_name"],
-        "age" : body["age"],
-        "lucky_numbers" : body["lucky_numbers"]
-    } 
-    new_member = jackson_family.add_tommy(tommy)
-    response_body = {
-        "msg" : "Se agrego tommy",
-        "member" : new_member
-    }
-    return jsonify(response_body), 200
-
 # ---------------------------------------------------------------------------- Endpoint to update family members
 @app.route("/members/<int:member_id>", methods=["PUT"])
 def handle_update_member(member_id):
     json_data = request.get_json()
     result = jackson_family.update_member(member_id, json_data)
     return jsonify(result), 200
-
 # ---------------------------------------------------------------------------- Endpoint to delete family members
 @app.route('/member/<int:member_id>', methods=['DELETE'])
 def handle_delete_member (member_id):
